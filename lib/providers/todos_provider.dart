@@ -3,12 +3,13 @@ import 'package:todo_list_flutter/models/todos_model.dart';
 
 class TodosProvider with ChangeNotifier {
   List<TodosModel> todos = [
-    TodosModel(title: 'Sleep', category: '0'),
-    TodosModel(title: 'Wake up', category: '1'),
-    TodosModel(title: 'Having breakfast', category: '1'),
-    TodosModel(title: 'Meeting', category: '0'),
-    TodosModel(title: 'Appointment with Mr.Kim', category: '0'),
-    TodosModel(title: 'Spa', category: '1'),
+    TodosModel(title: 'Sleep', category: '0', date: '22-05-2022'),
+    TodosModel(title: 'Wake up', category: '1', date: '22-05-2022'),
+    TodosModel(title: 'Having breakfast', category: '1', date: '22-05-2022'),
+    TodosModel(title: 'Meeting', category: '0', date: '22-05-2022'),
+    TodosModel(
+        title: 'Appointment with Mr.Kim', category: '0', date: '22-05-2022'),
+    TodosModel(title: 'Spa', category: '1', date: '22-05-2022'),
   ];
   int normal = 3;
   int important = 3;

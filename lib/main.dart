@@ -12,13 +12,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MaterialColor mycolor = const MaterialColor(
+      0xFFff3de6,
+      <int, Color>{
+        50: Color(0xFFff3de6),
+        100: Color(0xFFff3de6),
+        200: Color(0xFFff3de6),
+        300: Color(0xFFff3de6),
+        400: Color(0xFFff3de6),
+        500: Color(0xFFff3de6),
+        600: Color(0xFFff3de6),
+        700: Color(0xFFff3de6),
+        800: Color(0xFFff3de6),
+        900: Color(0xFFff3de6),
+      },
+    );
     return MultiProvider(
       // Set provider for the app
       providers: [ChangeNotifierProvider(create: (context) => TodosProvider())],
       child: MaterialApp(
         title: 'Todo list',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: mycolor,
         ),
         debugShowCheckedModeBanner: false,
         home: const HomePage(),

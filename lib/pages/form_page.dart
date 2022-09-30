@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_flutter/models/todos_model.dart';
 import 'package:todo_list_flutter/providers/todos_provider.dart';
@@ -14,10 +16,25 @@ class FormPage extends StatefulWidget {
 
 class _FormPageState extends State<FormPage> {
   final _formKey = GlobalKey<FormState>(); // Key for form widget
-  final titleController =
-      TextEditingController(); // For getting value from textField
+  // For getting value from textField
+  final titleController = TextEditingController();
   bool isImportant = true; // For important checkbox
   bool isNormal = false; // For normal checkbox
+  String pickerDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+  void _DayPicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2500),
+    ).then((value) {
+      setState(() {
+        DateTime date = value!;
+        pickerDate = DateFormat('dd-MM-yyyy').format(date);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +81,11 @@ class _FormPageState extends State<FormPage> {
 
                     var title = titleController.text;
 
-                    var value = TodosModel(title: title, category: isChecked);
+                    var value = TodosModel(
+                      title: title,
+                      category: isChecked,
+                      date: pickerDate,
+                    );
 
                     provider.add(value);
 
@@ -76,84 +97,114 @@ class _FormPageState extends State<FormPage> {
                   }
                 }
               },
-              child: Text('Done',
-                  style: TextStyle(
-                      color: AppColors.blue, fontSize: Dimensions.ten * 1.6)),
+              child: Text(
+                'Done',
+                style: TextStyle(
+                  color: AppColors.blue,
+                  fontSize: Dimensions.ten * 1.6,
+                ),
+              ),
             ),
           ),
         ],
       ),
-      body: Container(
-        height: Dimensions.screenHeight,
-        color: AppColors.blueWhite,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.only(
-                  top: Dimensions.ten * 15,
-                  left: Dimensions.ten * 2.5,
-                  right: Dimensions.ten * 2.5,
-                ),
-                child: TextFormField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'What you gonna do?',
+      body: SingleChildScrollView(
+        child: Container(
+          height: Dimensions.screenHeight,
+          color: AppColors.blueWhite,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(
+                    top: Dimensions.ten * 15,
+                    left: Dimensions.ten * 2.5,
+                    right: Dimensions.ten * 2.5,
                   ),
-                  autofocus: true,
-                  // Validate values before add to list
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter price of product.';
-                    }
-                    return null;
+                  child: TextFormField(
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      labelText: 'What you gonna do?',
+                    ),
+                    // Validate values before add to list
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter what you gonna do.';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                SizedBox(height: Dimensions.ten * 3),
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: Dimensions.ten * 1.6),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        pickerDate,
+                        style: TextStyle(
+                          fontSize: Dimensions.ten * 1.8,
+                        ),
+                      ),
+                      SizedBox(width: Dimensions.ten * 2.5),
+                      IconButton(
+                        onPressed: _DayPicker,
+                        icon: SvgPicture.asset(
+                          'assets/icons/calendar.svg',
+                          height: Dimensions.ten * 4,
+                          width: Dimensions.ten * 4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: Dimensions.ten * 3),
+                CheckboxListTile(
+                  title: Text(
+                    'IMPORTANT',
+                    style: TextStyle(
+                        color: isImportant ? AppColors.pink : AppColors.grey,
+                        fontWeight: FontWeight.w500,
+                        fontSize: Dimensions.ten * 1.5),
+                  ),
+                  value: isImportant,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (value) {
+                    setState(() {
+                      isImportant = value!;
+                      isNormal = !isImportant;
+                    });
                   },
+                  activeColor: AppColors.pink,
+                  checkColor: Colors.white,
                 ),
-              ),
-              SizedBox(height: Dimensions.ten * 3),
-              CheckboxListTile(
-                title: Text(
-                  'IMPORTANT',
-                  style: TextStyle(
-                      color: isImportant ? AppColors.pink : AppColors.grey,
-                      fontWeight: FontWeight.w500,
-                      fontSize: Dimensions.ten * 1.5),
+                CheckboxListTile(
+                  title: Text(
+                    'NORMAL',
+                    style: TextStyle(
+                        color: isNormal ? AppColors.blue : AppColors.grey,
+                        fontWeight: FontWeight.w500,
+                        fontSize: Dimensions.ten * 1.5),
+                  ),
+                  value: isNormal,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (value) {
+                    setState(() {
+                      isNormal = value!;
+                      isImportant = !isNormal;
+                    });
+                  },
+                  activeColor: AppColors.blue,
+                  checkColor: Colors.white,
                 ),
-                value: isImportant,
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (value) {
-                  setState(() {
-                    isImportant = value!;
-                    isNormal = !isImportant;
-                  });
-                },
-                activeColor: AppColors.pink,
-                checkColor: Colors.white,
-              ),
-              CheckboxListTile(
-                title: Text(
-                  'NORMAL',
-                  style: TextStyle(
-                      color: isNormal ? AppColors.blue : AppColors.grey,
-                      fontWeight: FontWeight.w500,
-                      fontSize: Dimensions.ten * 1.5),
-                ),
-                value: isNormal,
-                controlAffinity: ListTileControlAffinity.leading,
-                onChanged: (value) {
-                  setState(() {
-                    isNormal = value!;
-                    isImportant = !isNormal;
-                  });
-                },
-                activeColor: AppColors.blue,
-                checkColor: Colors.white,
-              ),
-              SizedBox(height: Dimensions.ten * 5),
-            ],
+                SizedBox(height: Dimensions.ten * 5),
+              ],
+            ),
           ),
         ),
       ),
