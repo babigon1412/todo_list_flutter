@@ -61,10 +61,17 @@ class _MyHomePageState extends State<HomePage> {
   }
 }
 
-class _TodoList extends StatelessWidget {
+class _TodoList extends StatefulWidget {
   const _TodoList({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<_TodoList> createState() => _TodoListState();
+}
+
+class _TodoListState extends State<_TodoList> {
+  int isImportant = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -99,9 +106,50 @@ class _TodoList extends StatelessWidget {
                 SizedBox(height: Dimensions.ten * 2),
                 Row(
                   children: [
-                    _Categories(title: 'IMPORTANT', color: AppColors.pink),
-                    SizedBox(width: Dimensions.ten * 1.5),
-                    _Categories(title: 'NORMAL', color: AppColors.blue),
+                    GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isImportant = 1;
+                          });
+                        },
+                        child: _Categories(
+                            title: 'IMPORTANT', color: AppColors.pink)),
+                    SizedBox(width: Dimensions.ten),
+                    GestureDetector(
+                        onTap: (() {
+                          setState(() {
+                            isImportant = 2;
+                          });
+                        }),
+                        child: _Categories(
+                            title: 'NORMAL', color: AppColors.blue)),
+                    SizedBox(width: Dimensions.ten),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isImportant = 0;
+                          });
+                        },
+                        child: Container(
+                          height: Dimensions.ten * 7.8,
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.all(Dimensions.ten),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(Dimensions.ten),
+                            color: Colors.white,
+                          ),
+                          child: Text(
+                            'All',
+                            style: TextStyle(
+                              color: AppColors.grey,
+                              fontSize: Dimensions.ten * 1.4,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: Dimensions.ten * 4),
@@ -128,44 +176,134 @@ class _TodoList extends StatelessWidget {
                       itemBuilder: (BuildContext context, int index) {
                         // Get values from provider to 'todos' instance
                         TodosModel todos = provider.todos[index];
-                        return Container(
-                          alignment: Alignment.center,
-                          height: Dimensions.ten * 6,
-                          margin: EdgeInsets.only(bottom: Dimensions.ten * 0.6),
-                          padding: EdgeInsets.only(left: Dimensions.ten),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.ten * 2),
-                          ),
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.circle_outlined,
-                              color: todos.category == '1'
-                                  ? AppColors.pink
-                                  : AppColors.blue,
-                              size: Dimensions.ten * 2.75,
+                        if (isImportant == 0) {
+                          // Show all of list
+                          return Container(
+                            alignment: Alignment.center,
+                            height: Dimensions.ten * 6,
+                            margin:
+                                EdgeInsets.only(bottom: Dimensions.ten * 0.6),
+                            padding: EdgeInsets.only(left: Dimensions.ten),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.circular(Dimensions.ten * 2),
                             ),
-                            title: Text(
-                              todos.title,
-                              style: TextStyle(
-                                color: AppColors.grey,
-                                fontSize: Dimensions.ten * 1.8,
-                                fontWeight: FontWeight.w500,
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.circle_outlined,
+                                color: todos.category == '1'
+                                    ? AppColors.pink
+                                    : AppColors.blue,
+                                size: Dimensions.ten * 2.75,
+                              ),
+                              title: Text(
+                                todos.title,
+                                style: TextStyle(
+                                  color: AppColors.grey,
+                                  fontSize: Dimensions.ten * 1.8,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  provider.remove(index);
+                                },
+                                icon: Icon(
+                                  Icons.close_rounded,
+                                  color: AppColors.blueLight,
+                                  size: Dimensions.ten * 2,
+                                ),
                               ),
                             ),
-                            trailing: IconButton(
-                              onPressed: () {
-                                provider.remove(index);
-                              },
-                              icon: Icon(
-                                Icons.close_rounded,
-                                color: AppColors.blueLight,
-                                size: Dimensions.ten * 2,
-                              ),
-                            ),
-                          ),
-                        );
+                          );
+                        } else if (isImportant == 1) {
+                          // Show important list
+                          return todos.category == '1'
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  height: Dimensions.ten * 6,
+                                  margin: EdgeInsets.only(
+                                      bottom: Dimensions.ten * 0.6),
+                                  padding:
+                                      EdgeInsets.only(left: Dimensions.ten),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.ten * 2),
+                                  ),
+                                  child: ListTile(
+                                    leading: Icon(
+                                      Icons.circle_outlined,
+                                      color: AppColors.pink,
+                                      size: Dimensions.ten * 2.75,
+                                    ),
+                                    title: Text(
+                                      todos.title,
+                                      style: TextStyle(
+                                        color: AppColors.grey,
+                                        fontSize: Dimensions.ten * 1.8,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    trailing: IconButton(
+                                      onPressed: () {
+                                        provider.remove(index);
+                                      },
+                                      icon: Icon(
+                                        Icons.close_rounded,
+                                        color: AppColors.blueLight,
+                                        size: Dimensions.ten * 2,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink();
+                        } else if (isImportant == 2) {
+                          // Show normal list
+                          return todos.category == '0'
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  height: Dimensions.ten * 6,
+                                  margin: EdgeInsets.only(
+                                      bottom: Dimensions.ten * 0.6),
+                                  padding:
+                                      EdgeInsets.only(left: Dimensions.ten),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.ten * 2),
+                                  ),
+                                  child: ListTile(
+                                    leading: Icon(
+                                      Icons.circle_outlined,
+                                      color: AppColors.blue,
+                                      size: Dimensions.ten * 2.75,
+                                    ),
+                                    title: Text(
+                                      todos.title,
+                                      style: TextStyle(
+                                        color: AppColors.grey,
+                                        fontSize: Dimensions.ten * 1.8,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    trailing: IconButton(
+                                      onPressed: () {
+                                        provider.remove(index);
+                                      },
+                                      icon: Icon(
+                                        Icons.close_rounded,
+                                        color: AppColors.blueLight,
+                                        size: Dimensions.ten * 2,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink();
+                        } else {
+                          return const SizedBox.shrink();
+                        }
                       },
                     );
                   }),
