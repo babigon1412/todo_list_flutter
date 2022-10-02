@@ -1,5 +1,3 @@
-Basic todo list app.
-
-In this project you can add a list by press the add button and you can choose the categories for it when you adding a new list. And it could be removed, if you're done the task or it's just unnecessary to do anymore.
+This project is an todo list app. When you open it, you'll be presented with a list page. You can add items by pressing the Add button in the bottom right. There are two levels of priority to choose 1st Normal level and 2nd important level. You can press on the star if you want the item to be an important level. And you can swipe to delete the list when it's done.
 
 thank you.
