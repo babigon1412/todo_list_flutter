@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -16,10 +18,9 @@ class FormPage extends StatefulWidget {
 
 class _FormPageState extends State<FormPage> {
   final _formKey = GlobalKey<FormState>(); // Key for form widget
-  // For getting value from textField
-  final titleController = TextEditingController();
-  bool isImportant = true; // For important checkbox
-  bool isNormal = false; // For normal checkbox
+  final titleController =
+      TextEditingController(); // For getting value from textField
+  bool isImportant = false; // For important checkbox
   String pickerDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
 
   void _DayPicker() {
@@ -45,6 +46,7 @@ class _FormPageState extends State<FormPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leadingWidth: Dimensions.ten * 9.5,
+
         // Cancel adding list
         leading: TextButton(
           onPressed: () {
@@ -54,9 +56,10 @@ class _FormPageState extends State<FormPage> {
           child: Text(
             'Cancel',
             style: TextStyle(
-                color: AppColors.blue, fontSize: Dimensions.ten * 1.6),
+                color: AppColors.blueGrey, fontSize: Dimensions.ten * 1.6),
           ),
         ),
+
         // Confirm adding list
         actions: [
           Padding(
@@ -67,40 +70,36 @@ class _FormPageState extends State<FormPage> {
                     Provider.of<TodosProvider>(context, listen: false);
 
                 if (_formKey.currentState!.validate()) {
-                  if (isImportant || isNormal) {
-                    // For classification categories and count a members
-                    // of categories
-                    String isChecked = '';
-                    if (isImportant) {
-                      isChecked = '1';
-                      provider.addImportant();
-                    } else {
-                      isChecked = '0';
-                      provider.addNormal();
-                    }
-
-                    var title = titleController.text;
-
-                    var value = TodosModel(
-                      title: title,
-                      category: isChecked,
-                      date: pickerDate,
-                    );
-
-                    provider.add(value);
-
-                    titleController.text = '';
-                    isImportant = false;
-                    isNormal = false;
-
-                    Navigator.pop(context);
+                  // For classification categories and count a members
+                  // of categories
+                  String isChecked = '';
+                  if (isImportant) {
+                    isChecked = '1';
+                    provider.addImportant();
+                  } else {
+                    isChecked = '0';
+                    provider.addNormal();
                   }
+
+                  var title = titleController.text;
+
+                  var value = TodosModel(
+                    title: title,
+                    category: isChecked,
+                    date: pickerDate,
+                  );
+
+                  provider.add(value);
+
+                  titleController.text = '';
+
+                  Navigator.pop(context);
                 }
               },
               child: Text(
                 'Done',
                 style: TextStyle(
-                  color: AppColors.blue,
+                  color: isImportant ? AppColors.pink : AppColors.blue,
                   fontSize: Dimensions.ten * 1.6,
                 ),
               ),
@@ -112,97 +111,103 @@ class _FormPageState extends State<FormPage> {
         child: Container(
           height: Dimensions.screenHeight,
           color: AppColors.blueWhite,
+          padding: EdgeInsets.only(
+            top: Dimensions.ten * 15,
+            left: Dimensions.ten * 2.5,
+            right: Dimensions.ten * 2.5,
+          ),
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  padding: EdgeInsets.only(
-                    top: Dimensions.ten * 15,
-                    left: Dimensions.ten * 2.5,
-                    right: Dimensions.ten * 2.5,
-                  ),
-                  child: TextFormField(
-                    controller: titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'What you gonna do?',
+                TextFormField(
+                  controller: titleController,
+                  style: TextStyle(fontSize: Dimensions.ten * 2),
+                  decoration: InputDecoration(
+                    hintText: 'What you gonna do?',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Dimensions.ten),
+                      borderSide: BorderSide.none,
                     ),
-                    // Validate values before add to list
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter what you gonna do.';
-                      }
-                      return null;
-                    },
                   ),
-                ),
-                SizedBox(height: Dimensions.ten * 3),
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: Dimensions.ten * 1.6),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        pickerDate,
-                        style: TextStyle(
-                          fontSize: Dimensions.ten * 1.8,
-                        ),
-                      ),
-                      SizedBox(width: Dimensions.ten * 2.5),
-                      IconButton(
-                        onPressed: _DayPicker,
-                        icon: SvgPicture.asset(
-                          'assets/icons/calendar.svg',
-                          height: Dimensions.ten * 4,
-                          width: Dimensions.ten * 4,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: Dimensions.ten * 3),
-                CheckboxListTile(
-                  title: Text(
-                    'IMPORTANT',
-                    style: TextStyle(
-                        color: isImportant ? AppColors.pink : AppColors.grey,
-                        fontWeight: FontWeight.w500,
-                        fontSize: Dimensions.ten * 1.5),
-                  ),
-                  value: isImportant,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  onChanged: (value) {
-                    setState(() {
-                      isImportant = value!;
-                      isNormal = !isImportant;
-                    });
+                  cursorHeight: Dimensions.ten * 3,
+
+                  // Validate values before add to list
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter what you gonna do.';
+                    }
+                    return null;
                   },
-                  activeColor: AppColors.pink,
-                  checkColor: Colors.white,
                 ),
-                CheckboxListTile(
-                  title: Text(
-                    'NORMAL',
-                    style: TextStyle(
-                        color: isNormal ? AppColors.blue : AppColors.grey,
-                        fontWeight: FontWeight.w500,
-                        fontSize: Dimensions.ten * 1.5),
-                  ),
-                  value: isNormal,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  onChanged: (value) {
-                    setState(() {
-                      isNormal = value!;
-                      isImportant = !isNormal;
-                    });
-                  },
-                  activeColor: AppColors.blue,
-                  checkColor: Colors.white,
+                SizedBox(height: Dimensions.ten * 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton(
+                      onPressed: _DayPicker,
+                      style: OutlinedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                        side: BorderSide(width: 2, color: AppColors.blueGrey),
+                      ),
+                      child: Row(
+                        children: [
+                          pickerDate ==
+                                  DateFormat('dd-MM-yyyy')
+                                      .format(DateTime.now())
+                                      .toString()
+                              ? Text(
+                                  'Today',
+                                  style: TextStyle(
+                                    fontSize: Dimensions.ten * 1.8,
+                                    color: AppColors.blueGrey,
+                                  ),
+                                )
+                              : Text(
+                                  pickerDate,
+                                  style: TextStyle(
+                                    fontSize: Dimensions.ten * 1.8,
+                                    color: AppColors.blueGrey,
+                                  ),
+                                ),
+                          SizedBox(width: Dimensions.ten * 1.0),
+                          IconButton(
+                            onPressed: _DayPicker,
+                            icon: SvgPicture.asset(
+                              'assets/icons/calendar_3.svg',
+                              height: Dimensions.ten * 4,
+                              width: Dimensions.ten * 4,
+                              color: AppColors.blueGrey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          isImportant = !isImportant;
+                        });
+                      },
+                      style: OutlinedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                        side: const BorderSide(
+                            width: 2, color: Colors.transparent),
+                      ),
+                      child: isImportant
+                          ? Icon(
+                              Icons.star_rounded,
+                              size: Dimensions.ten * 4,
+                            )
+                          : Icon(
+                              Icons.star_border_rounded,
+                              size: Dimensions.ten * 4,
+                            ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: Dimensions.ten * 5),
               ],
             ),
           ),

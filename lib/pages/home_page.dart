@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_flutter/models/todos_model.dart';
 import 'package:todo_list_flutter/pages/form_page.dart';
@@ -154,7 +155,7 @@ class _TodoListState extends State<_TodoList> {
                 ),
                 SizedBox(height: Dimensions.ten * 4),
                 Text(
-                  'WHAT\'S FOR TODAY',
+                  'DON\'T MISS IT',
                   style: TextStyle(
                       fontSize: Dimensions.ten * 1.2,
                       color: AppColors.blueGrey),
@@ -178,44 +179,50 @@ class _TodoListState extends State<_TodoList> {
                         TodosModel todos = provider.todos[index];
                         if (isImportant == 0) {
                           // Show all of list
-                          return Container(
-                            alignment: Alignment.center,
-                            height: Dimensions.ten * 6,
-                            margin:
-                                EdgeInsets.only(bottom: Dimensions.ten * 0.6),
-                            padding: EdgeInsets.only(left: Dimensions.ten),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.circular(Dimensions.ten * 2),
-                            ),
-                            child: ListTile(
-                              leading: Icon(
-                                Icons.circle_outlined,
-                                color: todos.category == '1'
-                                    ? AppColors.pink
-                                    : AppColors.blue,
-                                size: Dimensions.ten * 2.75,
-                              ),
-                              title: Text(
-                                todos.title,
-                                style: TextStyle(
-                                  color: AppColors.grey,
-                                  fontSize: Dimensions.ten * 1.8,
-                                  fontWeight: FontWeight.w500,
+                          return Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                height: Dimensions.ten * 6,
+                                margin: EdgeInsets.only(
+                                    bottom: Dimensions.ten * 0.6),
+                                padding: EdgeInsets.only(left: Dimensions.ten),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.circular(Dimensions.ten * 2),
+                                ),
+                                child: ListTile(
+                                  leading: Icon(
+                                    Icons.circle_outlined,
+                                    color: todos.category == '1'
+                                        ? AppColors.pink
+                                        : AppColors.blue,
+                                    size: Dimensions.ten * 2.75,
+                                  ),
+                                  title: Text(
+                                    todos.title,
+                                    style: TextStyle(
+                                      color: AppColors.grey,
+                                      fontSize: Dimensions.ten * 1.8,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () {
+                                      provider.remove(index);
+                                    },
+                                    icon: Icon(
+                                      Icons.close_rounded,
+                                      color: AppColors.blueLight,
+                                      size: Dimensions.ten * 2,
+                                    ),
+                                  ),
                                 ),
                               ),
-                              trailing: IconButton(
-                                onPressed: () {
-                                  provider.remove(index);
-                                },
-                                icon: Icon(
-                                  Icons.close_rounded,
-                                  color: AppColors.blueLight,
-                                  size: Dimensions.ten * 2,
-                                ),
-                              ),
-                            ),
+                            ],
                           );
                         } else if (isImportant == 1) {
                           // Show important list
@@ -245,6 +252,8 @@ class _TodoListState extends State<_TodoList> {
                                         fontSize: Dimensions.ten * 1.8,
                                         fontWeight: FontWeight.w500,
                                       ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     trailing: IconButton(
                                       onPressed: () {
@@ -287,6 +296,8 @@ class _TodoListState extends State<_TodoList> {
                                         fontSize: Dimensions.ten * 1.8,
                                         fontWeight: FontWeight.w500,
                                       ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     trailing: IconButton(
                                       onPressed: () {
@@ -398,26 +409,35 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       elevation: 0,
       centerTitle: true,
-      leading: Icon(
-        Icons.format_list_bulleted_outlined,
-        color: AppColors.greyBlack,
-        size: Dimensions.ten * 3,
+      leading: Padding(
+        padding: EdgeInsets.only(left: Dimensions.ten),
+        child: Container(
+          width: Dimensions.ten * 3.2,
+          margin: EdgeInsets.symmetric(vertical: Dimensions.ten * 0.8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Dimensions.ten),
+            color: Colors.transparent,
+          ),
+          child: Icon(
+            Icons.menu_rounded,
+            color: AppColors.blueGrey,
+            size: Dimensions.ten * 3,
+          ),
+        ),
       ),
       actions: [
         Padding(
-          padding: EdgeInsets.only(right: Dimensions.ten * 1.7),
+          padding: EdgeInsets.only(right: Dimensions.ten * 1.5),
           child: Container(
-            height: Dimensions.ten * 0.5,
-            width: Dimensions.ten * 4,
+            width: Dimensions.ten * 3.2,
             margin: EdgeInsets.symmetric(vertical: Dimensions.ten * 0.8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Dimensions.ten),
-              color: AppColors.blue,
+              color: Colors.transparent,
             ),
-            child: Icon(
-              Icons.notifications_rounded,
-              color: Colors.white,
-              size: Dimensions.ten * 2.5,
+            child: SvgPicture.asset(
+              'assets/icons/notification.svg',
+              color: AppColors.blueGrey,
             ),
           ),
         ),
