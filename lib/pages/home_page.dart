@@ -179,90 +179,107 @@ class _TodoListState extends State<_TodoList> {
                         TodosModel todos = provider.todos[index];
                         if (isImportant == 0) {
                           // Show all of list
-                          return Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.center,
-                                height: Dimensions.ten * 6,
-                                margin: EdgeInsets.only(
-                                    bottom: Dimensions.ten * 0.6),
-                                padding: EdgeInsets.only(left: Dimensions.ten),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.circular(Dimensions.ten * 2),
-                                ),
-                                child: ListTile(
-                                  leading: Icon(
-                                    Icons.circle_outlined,
-                                    color: todos.category == '1'
-                                        ? AppColors.pink
-                                        : AppColors.blue,
-                                    size: Dimensions.ten * 2.75,
-                                  ),
-                                  title: Text(
-                                    todos.title,
-                                    style: TextStyle(
-                                      color: AppColors.grey,
-                                      fontSize: Dimensions.ten * 1.8,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  trailing: IconButton(
-                                    onPressed: () {
-                                      provider.remove(index);
-                                    },
-                                    icon: Icon(
-                                      Icons.close_rounded,
-                                      color: AppColors.blueLight,
-                                      size: Dimensions.ten * 2,
-                                    ),
-                                  ),
+                          return Dismissible(
+                            key: UniqueKey(),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (direction) {
+                              provider.remove(index);
+                            },
+                            background: Container(
+                              padding:
+                                  EdgeInsets.only(right: Dimensions.ten * 3),
+                              alignment: AlignmentDirectional.centerEnd,
+                              child: Text(
+                                'Done',
+                                style: TextStyle(
+                                  fontSize: Dimensions.ten * 1.5,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.blueGrey.withOpacity(0.55),
                                 ),
                               ),
-                            ],
+                            ),
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: Dimensions.ten * 6,
+                              margin:
+                                  EdgeInsets.only(bottom: Dimensions.ten * 0.6),
+                              padding: EdgeInsets.only(left: Dimensions.ten),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.circular(Dimensions.ten * 2),
+                              ),
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.circle_outlined,
+                                  color: todos.category == '1'
+                                      ? AppColors.pink
+                                      : AppColors.blue,
+                                  size: Dimensions.ten * 2.75,
+                                ),
+                                title: Text(
+                                  todos.title,
+                                  style: TextStyle(
+                                    color: AppColors.grey,
+                                    fontSize: Dimensions.ten * 1.8,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
                           );
                         } else if (isImportant == 1) {
                           // Show important list
                           return todos.category == '1'
-                              ? Container(
-                                  alignment: Alignment.center,
-                                  height: Dimensions.ten * 6,
-                                  margin: EdgeInsets.only(
-                                      bottom: Dimensions.ten * 0.6),
-                                  padding:
-                                      EdgeInsets.only(left: Dimensions.ten),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(
-                                        Dimensions.ten * 2),
-                                  ),
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.circle_outlined,
-                                      color: AppColors.pink,
-                                      size: Dimensions.ten * 2.75,
-                                    ),
-                                    title: Text(
-                                      todos.title,
+                              ? Dismissible(
+                                  key: UniqueKey(),
+                                  direction: DismissDirection.endToStart,
+                                  onDismissed: (direction) {
+                                    provider.remove(index);
+                                  },
+                                  background: Container(
+                                    padding: EdgeInsets.only(
+                                        right: Dimensions.ten * 3),
+                                    alignment: AlignmentDirectional.centerEnd,
+                                    child: Text(
+                                      'Done',
                                       style: TextStyle(
-                                        color: AppColors.grey,
-                                        fontSize: Dimensions.ten * 1.8,
-                                        fontWeight: FontWeight.w500,
+                                        fontSize: Dimensions.ten * 1.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.blueGrey
+                                            .withOpacity(0.55),
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    trailing: IconButton(
-                                      onPressed: () {
-                                        provider.remove(index);
-                                      },
-                                      icon: Icon(
-                                        Icons.close_rounded,
-                                        color: AppColors.blueLight,
-                                        size: Dimensions.ten * 2,
+                                  ),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: Dimensions.ten * 6,
+                                    margin: EdgeInsets.only(
+                                        bottom: Dimensions.ten * 0.6),
+                                    padding:
+                                        EdgeInsets.only(left: Dimensions.ten),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(
+                                          Dimensions.ten * 2),
+                                    ),
+                                    child: ListTile(
+                                      leading: Icon(
+                                        Icons.circle_outlined,
+                                        color: AppColors.pink,
+                                        size: Dimensions.ten * 2.75,
+                                      ),
+                                      title: Text(
+                                        todos.title,
+                                        style: TextStyle(
+                                          color: AppColors.grey,
+                                          fontSize: Dimensions.ten * 1.8,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
@@ -271,42 +288,53 @@ class _TodoListState extends State<_TodoList> {
                         } else if (isImportant == 2) {
                           // Show normal list
                           return todos.category == '0'
-                              ? Container(
-                                  alignment: Alignment.center,
-                                  height: Dimensions.ten * 6,
-                                  margin: EdgeInsets.only(
-                                      bottom: Dimensions.ten * 0.6),
-                                  padding:
-                                      EdgeInsets.only(left: Dimensions.ten),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(
-                                        Dimensions.ten * 2),
-                                  ),
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.circle_outlined,
-                                      color: AppColors.blue,
-                                      size: Dimensions.ten * 2.75,
-                                    ),
-                                    title: Text(
-                                      todos.title,
+                              ? Dismissible(
+                                  key: UniqueKey(),
+                                  direction: DismissDirection.endToStart,
+                                  onDismissed: (direction) {
+                                    provider.remove(index);
+                                  },
+                                  background: Container(
+                                    padding: EdgeInsets.only(
+                                        right: Dimensions.ten * 3),
+                                    alignment: AlignmentDirectional.centerEnd,
+                                    child: Text(
+                                      'Done',
                                       style: TextStyle(
-                                        color: AppColors.grey,
-                                        fontSize: Dimensions.ten * 1.8,
-                                        fontWeight: FontWeight.w500,
+                                        fontSize: Dimensions.ten * 1.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.blueGrey
+                                            .withOpacity(0.55),
                                       ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    trailing: IconButton(
-                                      onPressed: () {
-                                        provider.remove(index);
-                                      },
-                                      icon: Icon(
-                                        Icons.close_rounded,
-                                        color: AppColors.blueLight,
-                                        size: Dimensions.ten * 2,
+                                  ),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: Dimensions.ten * 6,
+                                    margin: EdgeInsets.only(
+                                        bottom: Dimensions.ten * 0.6),
+                                    padding:
+                                        EdgeInsets.only(left: Dimensions.ten),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(
+                                          Dimensions.ten * 2),
+                                    ),
+                                    child: ListTile(
+                                      leading: Icon(
+                                        Icons.circle_outlined,
+                                        color: AppColors.blue,
+                                        size: Dimensions.ten * 2.75,
+                                      ),
+                                      title: Text(
+                                        todos.title,
+                                        style: TextStyle(
+                                          color: AppColors.grey,
+                                          fontSize: Dimensions.ten * 1.8,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
